@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Common;
@@ -12,15 +13,18 @@ namespace WebApi.BookOperations.UpdateBook
     public class UpdateBookCommand
     {
         public UpdateBookModel Model{get;set;}
+        public int BookId {get;set;}
         private readonly BookStoreDbContext _dbcontext;
-        public UpdateBookCommand(BookStoreDbContext dbContext) // constructor
+        private readonly IMapper _mapper;
+        public UpdateBookCommand(BookStoreDbContext dbContext, IMapper mapper) // constructor
         {
             _dbcontext = dbContext;
+            _mapper = mapper;
         }
 
-        public void Handle(int id)
+        public void Handle()
         {
-            var book=_dbcontext.Books.SingleOrDefault(x=> x.Id==id);
+            var book=_dbcontext.Books.SingleOrDefault(x=> x.Id==BookId);
 
             if(book is null)
                 throw new InvalidOperationException("Böyle bir kitap bulunamadi !!!");
